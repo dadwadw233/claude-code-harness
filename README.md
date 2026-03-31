@@ -1,105 +1,161 @@
 # Claude Code Harness
 
-Design the harness, not just the prompt.
+> Turn an agent idea into a real harness blueprint.
 
-`claude-code-harness` is a public skill and plugin package for developers who want to design real harnesses for agentic systems: request assembly, execution loops, tools, memory, permissions, transcript, recovery, and extension planes.
+`claude-code-harness` is a public skill and plugin package for developers who want to design the runtime around an agent, not just the prompt inside it.
 
-It is inspired by Claude Code’s harness design, but written as a generalized pattern language that other builders can apply to their own agentic products.
+It is inspired by Claude Code's harness design and generalized into a reusable pattern language for building agentic systems with clearer request assembly, tighter control loops, safer tool boundaries, and stronger recovery behavior.
 
 This project is unofficial. It is not affiliated with Anthropic.
 
-## Why this project exists
+## What a harness is
 
-Many agent projects stop too early. They have:
+A harness is the layer that turns a model into an operating system for work.
 
-- prompts without runtime boundaries
-- tools without governance
-- memory without layers
-- retries without stop conditions
-- “autonomy” without visibility or recovery
+It decides:
 
-This project exists to close that gap.
+- how a request is assembled
+- how a turn progresses
+- what tools exist and how they are governed
+- what memory survives which boundary
+- what gets logged, resumed, compacted, or escalated
+- how a human can still understand and control the system
 
-The goal is to help developers move from “an agent idea” to “a harness blueprint.”
+```mermaid
+flowchart LR
+    U["User / Host"]
+    RA["Request Assembly<br/>instructions + context + tools + history"]
+    TL["Turn Loop<br/>gather → think → act → verify"]
+    TP["Tool Plane<br/>capabilities + permissions"]
+    MP["Memory Plane<br/>context + durable memory + compaction"]
+    TR["Transcript / Recovery<br/>logs + resume + continuity"]
+    EP["Extension Plane<br/>plugins + MCP + subagents"]
 
-## What you get
+    U --> RA --> TL
+    TL --> TP
+    TL --> MP
+    TL --> TR
+    TP --> TL
+    MP --> TL
+    TR --> TL
+    EP --> TL
+```
+
+## Why this repo exists
+
+Most agent projects still stop at one of these weak states:
+
+- a prompt with a tool list
+- a loop with no governance
+- memory with no boundaries
+- autonomy with no control surface
+- retries with no recovery model
+
+This repo is meant to force a higher bar.
+
+The question it keeps asking is:
+
+**What is the harness here, exactly?**
+
+## What this skill does
 
 This repository currently ships one skill:
 
 - `claude-code-harness`
 
-That skill helps you design:
+The skill helps you produce a **harness blueprint** for an agentic system. It pushes you to specify the runtime planes that are usually hand-waved away.
+
+| Plane | What the skill forces you to define |
+|------|--------------------------------------|
+| Request assembly | instruction sources, system/user context, tool exposure, transcript normalization |
+| Turn loop | gather, decide, act, verify, stop/retry/escalate |
+| Tool plane | capability contracts, permission gates, success criteria, rollback story |
+| Memory plane | active context, retrieval, durable memory, compaction |
+| Recovery plane | transcript, resumability, partial work, continuity |
+| Human control | approvals, visibility, interruption, auditability |
+| Extension plane | plugins, MCP, subagents, future expansion points |
+
+## When to use it
+
+Use this skill when you need to answer questions like:
+
+- What is the runtime shape of this agent?
+- How should we assemble each model request?
+- What are the real boundaries between loop, tools, memory, and persistence?
+- Where should permissions and approvals live?
+- How would this system recover from interruption or partial failure?
+
+Do **not** use it when you only need:
+
+- a better prompt
+- a generic product brainstorm
+- a feature list for an AI app
+- plain implementation tasks with no runtime design problem
+
+## How this differs from `claude-code-philosophy`
+
+`claude-code-philosophy` is broader. It helps people design better agentic products in general.
+
+`claude-code-harness` is narrower and sharper. It is specifically about the runtime architecture around the model:
 
 - request assembly
-- turn loops
-- tool and capability planes
-- memory and context layers
-- permission and safety boundaries
-- transcript and recovery strategy
-- extension surfaces
+- control loop
+- capabilities
+- memory boundaries
+- transcript and recovery
 
-## What makes it different
+If `claude-code-philosophy` asks “what kind of agent product should this become?”, this repo asks “what harness must exist for that product to actually work?”
 
-This is not a general “agent design” skill.
+## What a good output looks like
 
-Its center of gravity is the **harness**: the runtime that turns a model into a durable, governable, usable system.
+When the skill is doing its job, the result should look like a blueprint, not a pep talk.
 
-In particular, it pushes users to specify:
+The default output shape includes:
 
-- how a request is assembled
-- how a turn progresses
-- how power is bounded
-- how state survives failure
-- how humans steer the system
+1. system goal and delegation boundary
+2. harness layers
+3. request assembly design
+4. turn loop design
+5. tool runtime and permission boundaries
+6. memory and context strategy
+7. transcript and recovery model
+8. extension surfaces
+9. build order
 
 ## Quick install
 
-### Codex: install the skill directly
+| Platform | Install | Invoke |
+|---------|---------|--------|
+| Codex | `$skill-installer install https://github.com/dadwadw233/claude-code-harness/tree/main/skills/claude-code-harness` | `$claude-code-harness` |
+| Claude Code plugin | `/plugin marketplace add dadwadw233/claude-code-harness` then `/plugin install claude-code-harness@claude-code-harness` | `/claude-code-harness:claude-code-harness` |
+| Claude Code standalone | copy `skills/claude-code-harness` to `~/.claude/skills/claude-code-harness` | `/claude-code-harness` |
 
-Inside Codex, run:
+Restart Codex after installing a new skill.
 
-```text
-$skill-installer install https://github.com/dadwadw233/claude-code-harness/tree/main/skills/claude-code-harness
-```
+## Example prompts
 
-Then restart Codex.
+### Codex
 
-### Claude Code: install through the repository marketplace
+- `Use $claude-code-harness to design a harness for this coding agent.`
+- `Use $claude-code-harness to turn this vague operator idea into a runtime blueprint.`
+- `Use $claude-code-harness to decide whether this workflow needs a real harness or just a simpler script.`
 
-Inside Claude Code, run:
+### Claude Code plugin install
 
-```text
-/plugin marketplace add dadwadw233/claude-code-harness
-/plugin install claude-code-harness@claude-code-harness
-```
+- `/claude-code-harness:claude-code-harness`
+- `/claude-code-harness:claude-code-harness Design a harness for a repo-writing agent with request assembly, permissions, and recovery.`
 
-Then invoke the installed skill with:
+### Claude Code standalone skill install
 
-```text
-/claude-code-harness:claude-code-harness
-```
+- `/claude-code-harness`
+- `/claude-code-harness Review whether this multi-agent idea really has a coherent harness.`
 
-## Installation details
+## Advanced install notes
 
-### Codex: direct skill install
-
-```text
-$skill-installer install https://github.com/dadwadw233/claude-code-harness/tree/main/skills/claude-code-harness
-```
-
-After installation, restart Codex.
-
-### Codex: local plugin install
-
-Clone the repo:
+### Codex local plugin install
 
 ```bash
 git clone git@github.com:dadwadw233/claude-code-harness.git
-```
-
-Copy it into your local plugin area:
-
-```bash
 mkdir -p ~/.codex/plugins
 cp -R /absolute/path/to/claude-code-harness ~/.codex/plugins/claude-code-harness
 ```
@@ -129,75 +185,25 @@ Create or update `~/.agents/plugins/marketplace.json`:
 }
 ```
 
-Restart Codex. The plugin should appear in the plugin directory.
-
-### Claude Code: marketplace install
-
-This repository includes a Claude Code marketplace manifest at `.claude-plugin/marketplace.json`.
-
-Register the marketplace:
-
-```text
-/plugin marketplace add dadwadw233/claude-code-harness
-```
-
-Install the plugin:
-
-```text
-/plugin install claude-code-harness@claude-code-harness
-```
-
-After installation, the explicit slash command is:
-
-```text
-/claude-code-harness:claude-code-harness
-```
-
-### Claude Code: manual skill install
-
-Copy the skill directory:
+### Claude Code manual install
 
 ```bash
 mkdir -p ~/.claude/skills
 cp -R skills/claude-code-harness ~/.claude/skills/claude-code-harness
 ```
 
-For a manually installed standalone skill, invoke:
+## Reference files
 
-```text
-/claude-code-harness
-```
+The skill itself stays concise. Depth lives in the references:
 
-## What the skill outputs
-
-When the skill is working well, it should produce a **harness blueprint** with:
-
-- system goal and delegation boundary
-- harness layers
-- request assembly design
-- turn loop design
-- tool runtime and permission boundaries
-- memory and context strategy
-- transcript and recovery model
-- extension surfaces
-- build order
-
-## Example prompts
-
-### Codex
-
-- `Use $claude-code-harness to design a harness for this coding agent.`
-- `Use $claude-code-harness to turn this vague operator idea into a real runtime blueprint.`
-
-### Claude Code plugin install
-
-- `/claude-code-harness:claude-code-harness`
-- `/claude-code-harness:claude-code-harness Design a harness for a repo-writing agent with request assembly, permissions, and recovery.`
-
-### Claude Code standalone skill install
-
-- `/claude-code-harness`
-- `/claude-code-harness Review whether this agent idea really needs a harness and design the smallest one that works.`
+- `harness-principles.md`
+  What a harness is, why it matters, and why request assembly is central.
+- `harness-pattern-language.md`
+  A reusable vocabulary for runtime planes such as request assembler, turn loop, transcript spine, and recovery plane.
+- `harness-blueprint-template.md`
+  The exact blueprint shape the skill should produce.
+- `claude-code-derived-insights.md`
+  The Claude Code-inspired lessons that were generalized into this skill.
 
 ## Repository structure
 
@@ -223,32 +229,35 @@ When the skill is working well, it should produce a **harness blueprint** with:
             └── harness-principles.md
 ```
 
-## Reference files
+## Design stance
 
-The repository keeps the skill concise and moves depth into references:
+This project is opinionated.
 
-- `harness-principles.md`: what a harness is and why it matters
-- `harness-pattern-language.md`: reusable runtime patterns
-- `harness-blueprint-template.md`: the default output shape
-- `claude-code-derived-insights.md`: generalized lessons distilled from Claude Code
+It prefers:
+
+- smaller loops over theatrical orchestration
+- explicit control planes over vague autonomy
+- bounded power over hidden power
+- recoverability over one-shot cleverness
+- runtime architecture over prompt mysticism
 
 ## Inspiration
 
-This project is strongly informed by:
+This repo is strongly informed by:
 
-- Claude Code’s request assembly and runtime design
-- Claude Code’s turn loop, memory maintenance, and transcript/recovery model
+- Claude Code's request assembly and runtime structure
+- Claude Code's turn loop, memory maintenance, and transcript/recovery model
 - official OpenAI/Codex skill and plugin conventions
 - Claude Code plugin and marketplace conventions
+- broader agent skills repositories that present skills as shareable, reusable building blocks
 
 ## Non-goals
 
 This project is not trying to:
 
 - clone Claude Code
-- provide an all-purpose agent framework
-- turn every workflow into an autonomous system
-- replace real implementation work with architecture theater
+- be a full agent framework
+- make every workflow autonomous
+- replace implementation with architecture theater
 
 It is trying to help developers design stronger harnesses.
-
