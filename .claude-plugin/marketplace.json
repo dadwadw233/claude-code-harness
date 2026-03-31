@@ -1,0 +1,23 @@
+{
+  "name": "claude-code-harness",
+  "owner": {
+    "name": "Yuanhong Yu",
+    "email": "dadwadw233@users.noreply.github.com"
+  },
+  "metadata": {
+    "description": "A public harness design skill derived from Claude Code-inspired runtime patterns.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "claude-code-harness",
+      "description": "A single-skill package for generating harness blueprints for agentic systems.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/claude-code-harness"
+      ]
+    }
+  ]
+}
+

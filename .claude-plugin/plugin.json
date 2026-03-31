@@ -1,0 +1,13 @@
+{
+  "name": "claude-code-harness",
+  "description": "A harness blueprint skill inspired by Claude Code-class systems.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Yuanhong Yu",
+    "email": "dadwadw233@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/dadwadw233/claude-code-harness",
+  "repository": "https://github.com/dadwadw233/claude-code-harness",
+  "license": "MIT"
+}
+
