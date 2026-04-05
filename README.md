@@ -1,5 +1,7 @@
 # Claude Code Harness
 
+[![Featured in awesome-agent-skills](https://img.shields.io/badge/featured%20in-awesome--agent--skills-2563eb?style=flat-square)](https://github.com/heilcheng/awesome-agent-skills)
+
 > Turn an agent idea into a real harness blueprint.
 
 `claude-code-harness` is a public skill and plugin package for developers who want to design the runtime around an agent, not just the prompt inside it.
