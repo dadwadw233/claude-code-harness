@@ -1,6 +1,7 @@
 # Claude Code Harness
 
 [![Featured in awesome-agent-skills](https://img.shields.io/badge/featured%20in-awesome--agent--skills-2563eb?style=flat-square)](https://github.com/heilcheng/awesome-agent-skills)
+[![Featured in awesome-codex-plugins](https://img.shields.io/badge/featured%20in-awesome--codex--plugins-0f766e?style=flat-square)](https://github.com/hashgraph-online/awesome-codex-plugins)
 
 > Turn an agent idea into a real harness blueprint.
 
